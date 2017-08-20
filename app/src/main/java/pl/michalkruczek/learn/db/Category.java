@@ -51,6 +51,10 @@ public class Category {
     }
 
     // KEEP METHODS - put your custom methods here
+    @Override
+    public String toString(){
+        return getValue();
+    }
     // KEEP METHODS END
 
 }
