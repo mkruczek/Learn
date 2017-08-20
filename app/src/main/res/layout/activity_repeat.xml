@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="pl.michalkruczek.learn.RepeatActivity">
+
+    <TextView
+        android:id="@+id/repeat_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="pytanie" />
+
+    <TextView
+        android:id="@+id/repeat_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="odpowiedz" />
+
+    <TextView
+        android:id="@+id/repeat_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="opis" />
+
+    <Button
+        android:id="@+id/repeat_buttonShowAnswer"
+        android:onClick="ShowAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="pokaz odp" />
+
+    <Button
+        android:id="@+id/repeat_buttonGoodAnswer"
+        android:onClick="GoodAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="dobrze" />
+
+    <Button
+        android:id="@+id/repeat_buttonWrongAnswer"
+        android:onClick="WrongAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="zle" />
+
+    <Button
+        android:id="@+id/repeat_buttonDeleteQuestion"
+        android:onClick="DeleteQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="usun pytanie" />
+
+    <Button
+        android:id="@+id/repeat_buttonNextQuestion"
+        android:onClick="NextQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="nastepne" />
+</LinearLayout>

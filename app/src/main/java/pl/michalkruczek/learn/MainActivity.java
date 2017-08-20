@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -26,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private DaoSession daoSession;
     private QuestionDao questionDao;
     List<Question> allQuestions;
-    List<Question> todayRepeat;
 
-
+    private TextView mainTextView;
+    private Button button_todayRepeat;
 
 
     @Override
@@ -43,30 +46,27 @@ public class MainActivity extends AppCompatActivity {
         daoSession = new DaoMaster(db).newSession();
         questionDao = daoSession.getQuestionDao();
         allQuestions = questionDao.queryBuilder().list();
-        todayRepeat = new ArrayList<>();
 
 
+        mainTextView = (TextView) findViewById(R.id.mainTextView);
+        button_todayRepeat = (Button) findViewById(R.id.button_todayRepeat);
 
-        for (Question word : allQuestions) {
-            word.setDateOfNextRepeat();
+        int numberOfAllQuestion = allQuestions.size();
+
+        String text = "w bazie jest " + numberOfAllQuestion + "pytań.\n";
+
+        for (Question question : allQuestions) {
+            text += question + "\n";
         }
 
+        mainTextView.setText(text);
 
-        for (Question word : allQuestions) {
-            Date today = new Date();
+    }
 
-            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+    public void todayRepeat(View view) {
 
-            String wordString = df.format(word.getNextRepeat());
-            String todayString = df.format(today);
+        Intent intent = new Intent(context, RepeatActivity.class);
+        context.startActivity(intent);
 
-            if(wordString.equals(todayString)){
-                todayRepeat.add(word);
-            }
-        }
-
-        for (Question word : todayRepeat) {
-            System.out.println(word);
-        }
     }
 }
