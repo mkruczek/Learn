@@ -18,18 +18,22 @@ import android.widget.Toast;
 
 import org.greenrobot.greendao.database.Database;
 
+import java.util.Date;
 import java.util.List;
 
 import pl.michalkruczek.learn.db.Category;
 import pl.michalkruczek.learn.db.CategoryDao;
 import pl.michalkruczek.learn.db.DaoMaster;
 import pl.michalkruczek.learn.db.DaoSession;
+import pl.michalkruczek.learn.db.Question;
+import pl.michalkruczek.learn.db.QuestionDao;
 
 public class AddQuestionActivity extends AppCompatActivity {
 
     private Context context;
 
     private DaoSession daoSession;
+    private QuestionDao questionDao;
     private CategoryDao categoryDao;
     private List<Category> allCategories;
 
@@ -50,6 +54,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         DaoMaster.DevOpenHelper helperDB = new DaoMaster.DevOpenHelper(context, "users.db");
         Database db = helperDB.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
+        questionDao = daoSession.getQuestionDao();
         categoryDao = daoSession.getCategoryDao();
         allCategories = categoryDao.queryBuilder().list();
 
@@ -58,8 +63,28 @@ public class AddQuestionActivity extends AppCompatActivity {
         button_settingsCategory = (Button) findViewById(R.id.button_settingsCategory);
         editText_question = (EditText) findViewById(R.id.editText_question);
         editText_answer = (EditText) findViewById(R.id.editText_answer);
+        editText_description = (EditText) findViewById(R.id.editText_description);
         imageButton_addQuestion = (ImageButton) findViewById(R.id.imageButton_addQuestion);
 
+
+    }
+
+    public void addQuestion(View view) {
+        Question question = new Question();
+        question.setQuestion(editText_question.getText().toString());
+        question.setAnswer(editText_answer.getText().toString());
+        question.setDescribe(editText_description.getText().toString());
+        question.setAddDate(new Date());
+        question.setNextRepeat(new Date());
+        question.setLevel(0);
+        question.setCategory((Category) spinner_category.getSelectedItem());
+
+        question.setDateOfNextRepeat();
+        questionDao.insert(question);
+
+        cleanEditText(editText_question);
+        cleanEditText(editText_answer);
+        cleanEditText(editText_description);
 
     }
 
@@ -119,7 +144,7 @@ public class AddQuestionActivity extends AppCompatActivity {
 
                 refreshSpinner(spinner_category, categoryDao.queryBuilder().list());
 
-                addCategoryEditTextNameNewCategory.setText("");
+                cleanEditText(addCategoryEditTextNameNewCategory);
             }
         });
 
@@ -150,4 +175,9 @@ public class AddQuestionActivity extends AppCompatActivity {
 
         return tableCategories;
     }
+
+    public static void cleanEditText(EditText editText) {
+        editText.setText("");
+    }
+
 }
