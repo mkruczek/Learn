@@ -1,6 +1,8 @@
 package pl.michalkruczek.learn;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private QuestionDao questionDao;
     List<Question> allQuestions;
     List<Question> todayRepeat;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

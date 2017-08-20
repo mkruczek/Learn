@@ -2,6 +2,8 @@ package pl.michalkruczek.learn;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,6 +50,8 @@ public class AddQuestionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_question);
+
+        createShortCut();
 
         context = AddQuestionActivity.this;
 
@@ -180,4 +184,14 @@ public class AddQuestionActivity extends AppCompatActivity {
         editText.setText("");
     }
 
+    public void createShortCut(){
+        Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+        shortcutintent.putExtra("duplicate", false);
+        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "add to Learn");
+        //TODO - change application icon
+        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), android.R.drawable.arrow_down_float);
+        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), AddQuestionActivity.class));
+        sendBroadcast(shortcutintent);
+    }
 }
