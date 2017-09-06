@@ -8,55 +8,97 @@
     tools:context="pl.michalkruczek.learn.RepeatActivity">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/question_2" />
+
+    <TextView
         android:id="@+id/repeat_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="pytanie" />
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_margin="15sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/correct_answer" />
 
     <TextView
         android:id="@+id/repeat_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="odpowiedz" />
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_margin="15sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/yours_help_description" />
 
     <TextView
         android:id="@+id/repeat_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="opis" />
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_margin="15sp"/>
 
     <Button
         android:id="@+id/repeat_buttonShowAnswer"
-        android:onClick="ShowAnswer"
+        android:onClick="showAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="pokaz odp" />
+        android:layout_margin="15sp"
+        android:text="@string/show_answer" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/repeat_buttonGoodAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15sp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_dark"
+            android:onClick="goodAnswer"
+            android:text="@string/good"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/repeat_buttonWrongAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15sp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_red_dark"
+            android:onClick="wrongAnswer"
+            android:text="@string/wrong"
+            android:visibility="invisible" />
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/repeat_buttonGoodAnswer"
-        android:onClick="GoodAnswer"
+        android:id="@+id/repeat_buttonDetailsQuestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="dobrze" />
-
-    <Button
-        android:id="@+id/repeat_buttonWrongAnswer"
-        android:onClick="WrongAnswer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="zle" />
-
-    <Button
-        android:id="@+id/repeat_buttonDeleteQuestion"
-        android:onClick="DeleteQuestion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="usun pytanie" />
+        android:layout_margin="15sp"
+        android:onClick="detailsQuestion"
+        android:text="@string/details_update_delete"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/repeat_buttonNextQuestion"
-        android:onClick="NextQuestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="nastepne" />
+        android:layout_margin="15sp"
+        android:text="@string/next_question"
+        android:visibility="invisible" />
 </LinearLayout>

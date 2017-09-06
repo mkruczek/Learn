@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Learn</string>
+    <string name="question">question</string>
+    <string name="answer">answer</string>
+    <string name="description">description</string>
+    <string name="set_name">set name</string>
+    <string name="add">ADD</string>
+    <string name="add_or_delete_category">Add or delete category.</string>
+    <string name="go_to_main_menu">Go To Main Menu</string>
+    <string name="add_question">Add Question</string>
+    <string name="show_all_questions">All Questions</string>
+    <string name="info">Info</string>
+    <string name="repeat">Repeat</string>
+    <string name="show_history">Show History</string>
+    <string name="details_update_delete">Details  Update  Delete</string>
+    <string name="good">GOOD</string>
+    <string name="wrong">WRONG</string>
+    <string name="next_question">Next Question</string>
+    <string name="show_answer">Show Answer</string>
+    <string name="yours_help_description">Yours help description:</string>
+    <string name="correct_answer">Correct Answer:</string>
+    <string name="question_2">Question:</string>
+    <string name="learn_everything">Learn Everything</string>
+    <string name="next_repeat">Next Repeat:</string>
+    <string name="category">Category</string>
+    <string name="you_can_click_and_change_date">You can click, and change date.</string>
 </resources>

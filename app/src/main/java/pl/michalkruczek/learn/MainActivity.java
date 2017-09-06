@@ -2,18 +2,16 @@ package pl.michalkruczek.learn;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.greenrobot.greendao.database.Database;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +26,11 @@ public class MainActivity extends AppCompatActivity {
 
     private DaoSession daoSession;
     private QuestionDao questionDao;
-    List<Question> allQuestions;
+    private List<Question> questionList;
 
-    private TextView mainTextView;
-    private Button button_todayRepeat;
-
+    private TextView main_numberOfAllQuestion;
+    private TextView main_numberOfTodayQuestion;
+    private ImageButton main_repeat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,28 +43,70 @@ public class MainActivity extends AppCompatActivity {
         Database db = helperDB.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
         questionDao = daoSession.getQuestionDao();
-        allQuestions = questionDao.queryBuilder().list();
+        questionList = questionDao.queryBuilder().list();
 
-
-        mainTextView = (TextView) findViewById(R.id.mainTextView);
-        button_todayRepeat = (Button) findViewById(R.id.button_todayRepeat);
-
-        int numberOfAllQuestion = allQuestions.size();
-
-        String text = "w bazie jest " + numberOfAllQuestion + "pytań.\n";
-
-        for (Question question : allQuestions) {
-            text += question + "\n";
+        for (Question question : questionList) {
+            question.checkMissesOutRepeat();
+            questionDao.update(question);
         }
 
-        mainTextView.setText(text);
+        main_numberOfAllQuestion = (TextView) findViewById(R.id.main_numberOfAllQuestion);
+        main_numberOfTodayQuestion = (TextView) findViewById(R.id.main_numberOfTodayQuestion);
+        main_repeat = (ImageButton) findViewById(R.id.main_repeat);
+
+        String numberOfAllQuestionString = "In Your Base You have " + questionList.size() + " questions.";
+
+        main_numberOfAllQuestion.setText(numberOfAllQuestionString);
+
+        int numberOfTodayQuestionInt = 0;
+
+        for (Question question : questionList) {
+            Date today = new Date();
+
+            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+
+            String questionString = df.format(question.getNextRepeat());
+            String todayString = df.format(today);
+
+            if (questionString.equals(todayString)) {
+                numberOfTodayQuestionInt++;
+            }
+        }
+
+        String numberOfTodayQuestionString = "";
+
+        if (numberOfTodayQuestionInt == 0) {
+            numberOfTodayQuestionString = "Today... You have holiday :D, zero questions to repeat.";
+            main_repeat.setEnabled(false);
+        } else if(numberOfTodayQuestionInt == 1){
+            numberOfTodayQuestionString = " Today You have only one question to repeat.";
+        } else {
+            numberOfTodayQuestionString = "Today you have " + numberOfTodayQuestionInt + " questions to repeat.";
+        }
+
+        main_numberOfTodayQuestion.setText(numberOfTodayQuestionString);
 
     }
 
-    public void todayRepeat(View view) {
-
+    public void mainTodayRepeat(View view) {
         Intent intent = new Intent(context, RepeatActivity.class);
         context.startActivity(intent);
+    }
+
+    public void mainAddQuestion(View view) {
+        Intent intent = new Intent(context, AddQuestionActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void mainShowDb(View view) {
+        Intent intent = new Intent(context, AllQuestionActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void mainInfo(View view) {
+        Intent intent = new Intent(context, InfoActivity.class);
+        context.startActivity(intent);
+
 
     }
 }

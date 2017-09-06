@@ -13,7 +13,7 @@
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="22dp"
-        android:text="Add or delete category." />
+        android:text="@string/add_or_delete_category" />
 
     <LinearLayout
         android:layout_weight="0.2"
@@ -28,14 +28,15 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="//set name" />
+            android:hint="@string/set_name" />
 
         <Button
             android:id="@+id/button_addCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ADD" />
+            android:background="@null"
+            android:text="@string/add" />
 
     </LinearLayout>
 

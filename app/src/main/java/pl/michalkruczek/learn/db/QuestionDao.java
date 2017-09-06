@@ -33,6 +33,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         public final static Property AddDate = new Property(5, java.util.Date.class, "addDate", false, "ADD_DATE");
         public final static Property NextRepeat = new Property(6, java.util.Date.class, "nextRepeat", false, "NEXT_REPEAT");
         public final static Property Level = new Property(7, Integer.class, "level", false, "LEVEL");
+        public final static Property History = new Property(8, String.class, "history", false, "HISTORY");
     }
 
     private DaoSession daoSession;
@@ -58,7 +59,8 @@ public class QuestionDao extends AbstractDao<Question, Long> {
                 "\"DESCRIBE\" TEXT," + // 4: describe
                 "\"ADD_DATE\" INTEGER," + // 5: addDate
                 "\"NEXT_REPEAT\" INTEGER," + // 6: nextRepeat
-                "\"LEVEL\" INTEGER);"); // 7: level
+                "\"LEVEL\" INTEGER," + // 7: level
+                "\"HISTORY\" TEXT);"); // 8: history
     }
 
     /** Drops the underlying database table. */
@@ -110,6 +112,11 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         if (level != null) {
             stmt.bindLong(8, level);
         }
+ 
+        String history = entity.getHistory();
+        if (history != null) {
+            stmt.bindString(9, history);
+        }
     }
 
     @Override
@@ -155,6 +162,11 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         if (level != null) {
             stmt.bindLong(8, level);
         }
+ 
+        String history = entity.getHistory();
+        if (history != null) {
+            stmt.bindString(9, history);
+        }
     }
 
     @Override
@@ -178,7 +190,8 @@ public class QuestionDao extends AbstractDao<Question, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // describe
             cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)), // addDate
             cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)), // nextRepeat
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7) // level
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // level
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // history
         );
         return entity;
     }
@@ -193,6 +206,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         entity.setAddDate(cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)));
         entity.setNextRepeat(cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)));
         entity.setLevel(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setHistory(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

@@ -13,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -46,12 +45,11 @@ public class AddQuestionActivity extends AppCompatActivity {
     private EditText editText_description;
     private ImageButton imageButton_addQuestion;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_question);
-
-        createShortCut();
 
         context = AddQuestionActivity.this;
 
@@ -61,6 +59,14 @@ public class AddQuestionActivity extends AppCompatActivity {
         questionDao = daoSession.getQuestionDao();
         categoryDao = daoSession.getCategoryDao();
         allCategories = categoryDao.queryBuilder().list();
+
+        if (allCategories.size() == 0) {
+            createShortCut();
+            Category defaultCategory = new Category();
+            defaultCategory.setValue("Default Category");
+            categoryDao.insert(defaultCategory);
+            allCategories = categoryDao.queryBuilder().list();
+        }
 
         spinner_category = (Spinner) findViewById(R.id.spinner_category);
         refreshSpinner(spinner_category, allCategories);
@@ -74,6 +80,9 @@ public class AddQuestionActivity extends AppCompatActivity {
     }
 
     public void addQuestion(View view) {
+
+        if(!editText_question.getText().toString().equals("") && !editText_answer.getText().toString().equals("") && !editText_description.getText().toString().equals("")){
+
         Question question = new Question();
         question.setQuestion(editText_question.getText().toString());
         question.setAnswer(editText_answer.getText().toString());
@@ -81,6 +90,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         question.setAddDate(new Date());
         question.setNextRepeat(new Date());
         question.setLevel(0);
+        question.setHistory("0");
         question.setCategory((Category) spinner_category.getSelectedItem());
 
         question.setDateOfNextRepeat();
@@ -89,6 +99,18 @@ public class AddQuestionActivity extends AppCompatActivity {
         cleanEditText(editText_question);
         cleanEditText(editText_answer);
         cleanEditText(editText_description);
+
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(context)
+                    .setTitle("complete all fields.")
+                    .setMessage("In \"description\", You can use mnemonics to easier associate answer.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
+        }
 
     }
 
@@ -102,22 +124,34 @@ public class AddQuestionActivity extends AppCompatActivity {
                 , android.R.layout.simple_spinner_item
                 , changeListToTable(categoryDao.queryBuilder().list())));
 
+
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
 
+                final Category categoryToDelete = (Category) listView.getItemAtPosition(i);
+                String categoryName = categoryToDelete.getValue().toUpperCase();
+
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                alertDialog.setMessage("Really want delete this category?")
+                alertDialog.setMessage("Really want delete " + categoryName + " category?\nIf You do this, You delete all question of this category!")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int j) {
-                                Category categoryToDelete = (Category) listView.getItemAtPosition(i);
-                                daoSession.delete(categoryToDelete);
+
+                                categoryDao.delete(categoryToDelete);
                                 listView.setAdapter(new ArrayAdapter<Category>(context
                                         , android.R.layout.simple_spinner_item
                                         , changeListToTable(categoryDao.queryBuilder().list())));
 
                                 refreshSpinner(spinner_category, categoryDao.queryBuilder().list());
+
+                                for (Question question : questionDao.queryBuilder().list()) {
+                                    if(question.getCategoryId() == categoryToDelete.getId()){
+                                        questionDao.delete(question);
+                                    }
+                                }
+
+
                             }
                         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
@@ -136,19 +170,24 @@ public class AddQuestionActivity extends AppCompatActivity {
         button_addCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String newNameCategory = addCategoryEditTextNameNewCategory.getText().toString();
-                Category category = new Category();
-                category.setValue(newNameCategory);
-                categoryDao.insert(category);
-                listView.setAdapter(new ArrayAdapter<Category>(context
-                        , android.R.layout.simple_spinner_item
-                        , changeListToTable(categoryDao.queryBuilder().list())));
 
-                Toast.makeText(context, "Category added.", Toast.LENGTH_SHORT).show();
+                if(!addCategoryEditTextNameNewCategory.getText().toString().equals("")) {
+                    String newNameCategory = addCategoryEditTextNameNewCategory.getText().toString();
+                    Category category = new Category();
+                    category.setValue(newNameCategory);
+                    categoryDao.insert(category);
+                    listView.setAdapter(new ArrayAdapter<Category>(context
+                            , android.R.layout.simple_spinner_item
+                            , changeListToTable(categoryDao.queryBuilder().list())));
 
-                refreshSpinner(spinner_category, categoryDao.queryBuilder().list());
+                    Toast.makeText(context, "Category added.", Toast.LENGTH_SHORT).show();
 
-                cleanEditText(addCategoryEditTextNameNewCategory);
+                    refreshSpinner(spinner_category, categoryDao.queryBuilder().list());
+
+                    cleanEditText(addCategoryEditTextNameNewCategory);
+                } else {
+                    Toast.makeText(context, "Set name of category.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -166,7 +205,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         Category[] tableCategories = changeListToTable(categories);
 
         ArrayAdapter<Category> spinnerArrayAdapter = new ArrayAdapter<Category>(context, android.R.layout.simple_spinner_item, tableCategories);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
     }
 
@@ -184,14 +223,26 @@ public class AddQuestionActivity extends AppCompatActivity {
         editText.setText("");
     }
 
-    public void createShortCut(){
-        Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        shortcutintent.putExtra("duplicate", false);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "add to Learn");
-        //TODO - change application icon
-        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), android.R.drawable.arrow_down_float);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), AddQuestionActivity.class));
-        sendBroadcast(shortcutintent);
+    public void createShortCut() {
+
+        Intent shortcutIntent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+        shortcutIntent.putExtra("duplicate", false);
+        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "add to Learn");
+        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_add_question);
+        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), AddQuestionActivity.class));
+        sendBroadcast(shortcutIntent);
+    }
+
+    public void goToMainActivity(View view) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
     }
 }

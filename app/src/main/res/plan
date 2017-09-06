@@ -1,0 +1,6 @@
+
+Futures:
+1. dodać historię poziomów danego pytania wraz z wykresem
+    - mozna zrobić dodatkowe pole string i metode zamieniajaca stringa na liste (split, tokenizer)
+    - mozna dodac dodatkowa table w db z kluczem obcym do pytania i tworzyc liste filtrujaca baze
+

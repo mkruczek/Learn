@@ -10,7 +10,7 @@ public class MyDBGenerator {
 
     public static void main(String[] args) {
 
-        Schema schema = new Schema(6, "pl.michalkruczek.learn.db");
+        Schema schema = new Schema(7, "pl.michalkruczek.learn.db");
         schema.enableKeepSectionsByDefault();
 
         addTables(schema);
@@ -39,6 +39,7 @@ public class MyDBGenerator {
         question.addDateProperty("addDate");
         question.addDateProperty("nextRepeat");
         question.addIntProperty("level");
+        question.addStringProperty("history");
 
 
 
